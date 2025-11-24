@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.HabitacionesController"
+            fitToWidth="true"
+            style="-fx-background: #F7F9FC; -fx-background-color: #F7F9FC;">
+
+    <VBox spacing="25" style="-fx-background-color: #F7F9FC;">
+        <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
+
+        <!-- Header -->
+        <HBox alignment="CENTER_LEFT" spacing="0">
+            <VBox HBox.hgrow="ALWAYS">
+                <Label text="Gestión de Habitaciones" 
+                       style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                <Label text="Administrar habitaciones del hotel" 
+                       style="-fx-font-size: 13px; -fx-text-fill: #6c757d;"/>
+            </VBox>
+            <Button fx:id="btnNuevaHabitacion" text="+ Nueva Habitación" 
+                    onAction="#handleNuevaHabitacion"
+                    styleClass="btn-primary"
+                    style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 12 24; -fx-cursor: hand;"/>
+        </HBox>
+
+        <!-- Grid de Habitaciones -->
+        <GridPane fx:id="gridHabitaciones" hgap="20" vgap="20">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="33.33"/>
+                <ColumnConstraints percentWidth="33.33"/>
+                <ColumnConstraints percentWidth="33.33"/>
+            </columnConstraints>
+            
+            <!-- Las habitaciones se cargarán dinámicamente desde el controlador -->
+        </GridPane>
+
+    </VBox>
+</ScrollPane>

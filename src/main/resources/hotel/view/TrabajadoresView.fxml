@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.TrabajadoresController"
+            fitToWidth="true"
+            style="-fx-background: #F7F9FC; -fx-background-color: #F7F9FC;">
+
+    <VBox spacing="25" style="-fx-background-color: #F7F9FC;">
+        <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
+
+        <!-- Header -->
+        <HBox alignment="CENTER_LEFT" spacing="0">
+            <VBox HBox.hgrow="ALWAYS">
+                <Label text="Gestión de Trabajadores"
+                       style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                <Label text="Administrar empleados del hotel"
+                       style="-fx-font-size: 13px; -fx-text-fill: #6c757d;"/>
+            </VBox>
+            <Button fx:id="btnNuevoTrabajador" text="+ Nuevo Trabajador"
+                    styleClass="btn-primary"
+                    style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 12 24; -fx-cursor: hand;"/>
+        </HBox>
+
+        <!-- Barra de búsqueda -->
+        <HBox spacing="10" alignment="CENTER_LEFT"
+              style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 12 16; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 1);">
+            <TextField fx:id="txtBuscar" promptText="Buscar trabajador..." HBox.hgrow="ALWAYS"
+                       style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-font-size: 14px;"/>
+        </HBox>
+
+        <!-- Tabla de Trabajadores -->
+        <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);">
+            <!-- Botones de acciones generales -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Button fx:id="btnEditarTrabajador" text="Editar seleccionado"
+                        style="-fx-background-color: #f59e0b; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 8 16; -fx-cursor: hand;"/>
+                <Button fx:id="btnEliminarTrabajador" text="Eliminar seleccionado"
+                        style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 8 16; -fx-cursor: hand;"/>
+            </HBox>
+            <TableView fx:id="tblTrabajadores" style="-fx-background-color: transparent;">
+                <columns>
+                    <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
+                    <TableColumn fx:id="colPrimerNombre" text="Primer Nombre" prefWidth="160"/>
+                    <TableColumn fx:id="colSegundoNombre" text="Segundo Nombre" prefWidth="160"/>
+                    <TableColumn fx:id="colPrimerApellido" text="Primer Apellido" prefWidth="160"/>
+                    <TableColumn fx:id="colSegundoApellido" text="Segundo Apellido" prefWidth="160"/>
+                    <TableColumn fx:id="colUsuario" text="Usuario" prefWidth="140"/>
+                    <TableColumn fx:id="colRol" text="Rol" prefWidth="160"/>
+                    <TableColumn fx:id="colSueldo" text="Sueldo COP" prefWidth="130"/>
+                    <TableColumn fx:id="colEstado" text="Estado" prefWidth="120"/>
+                </columns>
+            </TableView>
+        </VBox>
+
+    </VBox>
+</ScrollPane>

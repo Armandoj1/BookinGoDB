@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.AdminDashboardController"
+            fitToWidth="true"
+            stylesheets="@../styles/styles.css"
+            style="-fx-background: #f5f7fa; -fx-background-color: #f5f7fa;">
+
+    <VBox spacing="25" style="-fx-background-color: #f5f7fa;">
+        <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
+
+        <!-- Header -->
+        <HBox alignment="CENTER_LEFT" spacing="15">
+            <VBox>
+                <Label text="Dashboard - Administración" 
+                       style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #1a1a1a;"/>
+                <Label text="Resumen del estado actual del hotel" 
+                       style="-fx-font-size: 14px; -fx-text-fill: #6b7280;"/>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS"/>
+            <VBox alignment="CENTER_RIGHT">
+                <Label text="Fecha de Hoy" 
+                       style="-fx-font-size: 11px; -fx-text-fill: #6b7280;"/>
+                <Label fx:id="lblFechaHora" text="Domingo, 23 De Noviembre De 2025" 
+                       style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #1a1a1a;"/>
+            </VBox>
+        </HBox>
+
+        <!-- Tarjetas de Métricas Principales -->
+        <GridPane hgap="14" vgap="14">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="25"/>
+                <ColumnConstraints percentWidth="25"/>
+                <ColumnConstraints percentWidth="25"/>
+                <ColumnConstraints percentWidth="25"/>
+            </columnConstraints>
+
+            <!-- Tarjeta 1: Administradores (moderna) -->
+            <VBox GridPane.columnIndex="0" spacing="8" alignment="CENTER" styleClass="dashboard-card">
+                <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
+                <HBox alignment="CENTER" spacing="8">
+                    <Label text="Administradores" style="-fx-font-size: 14px; -fx-font-weight: 600; -fx-text-fill: #1a1a1a;"/>
+                </HBox>
+                <Label fx:id="lblAdministradores" text="0" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #111827;"/>
+                <Label text="Activos" style="-fx-font-size: 11px; -fx-text-fill: #6b7280;"/>
+            </VBox>
+
+            <!-- Tarjeta 2: Recepcionistas (moderna) -->
+            <VBox GridPane.columnIndex="1" spacing="8" alignment="CENTER" styleClass="dashboard-card">
+                <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
+                <HBox alignment="CENTER" spacing="8">
+                    <Label text="Recepcionistas" style="-fx-font-size: 14px; -fx-font-weight: 600; -fx-text-fill: #1a1a1a;"/>
+                </HBox>
+                <Label fx:id="lblRecepcionistas" text="0" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #111827;"/>
+                <Label text="Activos" style="-fx-font-size: 11px; -fx-text-fill: #6b7280;"/>
+            </VBox>
+
+            <!-- Tarjeta 3: Habitaciones Disponibles (moderna) -->
+            <VBox GridPane.columnIndex="2" spacing="8" alignment="CENTER" styleClass="dashboard-card">
+                <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
+                <HBox alignment="CENTER" spacing="8">
+                    <Label text="Habitaciones" style="-fx-font-size: 14px; -fx-font-weight: 600; -fx-text-fill: #1a1a1a;"/>
+                </HBox>
+                <Label fx:id="lblHabDisponibles" text="0" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #111827;"/>
+                <Label text="Disponibles" style="-fx-font-size: 11px; -fx-text-fill: #6b7280;"/>
+                <Label fx:id="lblTotalHabitaciones" text="De 0 totales" style="-fx-font-size: 11px; -fx-text-fill: #6b7280;"/>
+            </VBox>
+
+            <!-- Tarjeta 4: Habitaciones Ocupadas (moderna) -->
+            <VBox GridPane.columnIndex="3" spacing="8" alignment="CENTER" styleClass="dashboard-card">
+                <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
+                <HBox alignment="CENTER" spacing="8">
+                    <Label text="Habitaciones" style="-fx-font-size: 14px; -fx-font-weight: 600; -fx-text-fill: #1a1a1a;"/>
+                </HBox>
+                <Label fx:id="lblHabOcupadas" text="0" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #111827;"/>
+                <Label text="Ocupadas" style="-fx-font-size: 11px; -fx-text-fill: #6b7280;"/>
+                <Label fx:id="lblOcupacion" text="Ocupación: 0%" style="-fx-font-size: 11px; -fx-text-fill: #6b7280;"/>
+            </VBox>
+        </GridPane>
+
+        <!-- Sección: Reservas Activas -->
+        <VBox spacing="15" 
+              style="-fx-background-color: white; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 2);">
+            <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
+            
+            <HBox alignment="CENTER_LEFT" spacing="15">
+                <Label text="Reservas Activas" 
+                       style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a1a1a;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="lblReservasActivas" text="0" 
+                       style="-fx-background-color: #fef3c7; -fx-text-fill: #92400e; -fx-padding: 6 16; -fx-background-radius: 20; -fx-font-weight: bold; -fx-font-size: 14px;"/>
+            </HBox>
+            
+            <Separator style="-fx-background-color: #e5e7eb;"/>
+            
+            <Label text="Reservas confirmadas y activas en el sistema" 
+                   style="-fx-font-size: 14px; -fx-text-fill: #6b7280;"/>
+        </VBox>
+
+        <!-- Sección: Resumen de Estado -->
+        <HBox spacing="20" VBox.vgrow="ALWAYS">
+            <!-- Panel: Total Trabajadores -->
+            <VBox spacing="15" HBox.hgrow="ALWAYS" 
+                  style="-fx-background-color: white; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 2);">
+                <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+                
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Total de Trabajadores" 
+                           style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1a1a1a;"/>
+                </HBox>
+                
+                <Separator style="-fx-background-color: #e5e7eb;"/>
+                
+                <HBox spacing="30" alignment="CENTER">
+                    <VBox alignment="CENTER">
+                        <Label fx:id="lblTotalTrabajadores" text="0" 
+                               style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #4fc3f7;"/>
+                        <Label text="Total" 
+                               style="-fx-font-size: 12px; -fx-text-fill: #6b7280;"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+
+            <!-- Panel: Estado de Habitaciones -->
+            <VBox spacing="15" HBox.hgrow="ALWAYS" 
+                  style="-fx-background-color: white; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 2);">
+                <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+                
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Estado de Habitaciones" 
+                           style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1a1a1a;"/>
+                </HBox>
+                
+                <Separator style="-fx-background-color: #e5e7eb;"/>
+                
+                <HBox spacing="30" alignment="CENTER">
+                    <VBox alignment="CENTER">
+                        <Label fx:id="lblHabMantenimiento" text="0" 
+                               style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #fbbf24;"/>
+                        <Label text="Mantenimiento" 
+                               style="-fx-font-size: 12px; -fx-text-fill: #6b7280;"/>
+                    </VBox>
+                    
+                    <VBox alignment="CENTER">
+                        <ProgressBar fx:id="pbOcupacion" progress="0" 
+                                     prefWidth="120" prefHeight="8"
+                                     style="-fx-accent: #ab47bc;"/>
+                        <Label text="Ocupación" 
+                               style="-fx-font-size: 12px; -fx-text-fill: #6b7280; -fx-padding: 5 0 0 0;"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+
+            <!-- Panel: Ingresos (opcional) -->
+            <VBox spacing="15" HBox.hgrow="ALWAYS" 
+                  style="-fx-background-color: white; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 2);">
+                <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+                
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Ingresos del Mes" 
+                           style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1a1a1a;"/>
+                </HBox>
+                
+                <Separator style="-fx-background-color: #e5e7eb;"/>
+                
+                <VBox alignment="CENTER">
+                    <Label fx:id="lblIngresosMes" text="S/. 0.00" 
+                           style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #48c774;"/>
+                    <Label text="Total acumulado" 
+                           style="-fx-font-size: 12px; -fx-text-fill: #6b7280;"/>
+                </VBox>
+            </VBox>
+        </HBox>
+
+    </VBox>
+</ScrollPane>

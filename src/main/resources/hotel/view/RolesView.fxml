@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.RolesController"
+            fitToWidth="true"
+            style="-fx-background: #F7F9FC; -fx-background-color: #F7F9FC;">
+
+    <VBox spacing="25" style="-fx-background-color: #F7F9FC;">
+        <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
+
+        <!-- Header -->
+        <HBox alignment="CENTER_LEFT" spacing="0">
+            <VBox HBox.hgrow="ALWAYS">
+                <Label text="Gestión de Roles"
+                       style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                <Label text="Administrar roles y permisos"
+                       style="-fx-font-size: 13px; -fx-text-fill: #6c757d;"/>
+            </VBox>
+            <Button fx:id="btnNuevoRol" text="+ Nuevo Rol"
+                    styleClass="btn-primary"
+                    style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 12 24; -fx-cursor: hand;"/>
+        </HBox>
+
+        <!-- Tabla editable de Roles -->
+        <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);">
+            <TableView fx:id="tblRoles" editable="true" style="-fx-background-color: transparent;">
+                <columns>
+                    <TableColumn fx:id="colId" text="ID" prefWidth="80" />
+                    <TableColumn fx:id="colNombre" text="Nombre del Rol" prefWidth="240" />
+                    <TableColumn fx:id="colDescripcion" text="Descripción" prefWidth="480" />
+                </columns>
+            </TableView>
+        </VBox>
+
+    </VBox>
+</ScrollPane>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.HuespedesController"
+            fitToWidth="true"
+            style="-fx-background: #F7F9FC; -fx-background-color: #F7F9FC;">
+
+    <VBox spacing="25" style="-fx-background-color: #F7F9FC;">
+        <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
+
+        <!-- Header -->
+        <HBox alignment="CENTER_LEFT" spacing="0">
+            <VBox HBox.hgrow="ALWAYS">
+                <Label text="Gestión de Huéspedes" 
+                       style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                <Label text="Administrar clientes del hotel" 
+                       style="-fx-font-size: 13px; -fx-text-fill: #6c757d;"/>
+            </VBox>
+            <Button fx:id="btnNuevoHuesped" text="+ Nuevo Huésped" 
+                    styleClass="btn-primary"
+                    style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 12 24; -fx-cursor: hand;"/>
+        </HBox>
+
+        <!-- Tarjetas de Métricas -->
+        <GridPane hgap="14" vgap="14">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="25"/>
+                <ColumnConstraints percentWidth="25"/>
+                <ColumnConstraints percentWidth="25"/>
+                <ColumnConstraints percentWidth="25"/>
+            </columnConstraints>
+
+            <!-- Total Clientes -->
+            <VBox GridPane.columnIndex="0" spacing="6" alignment="CENTER_LEFT"
+                  style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 14; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 1);">
+                <HBox alignment="CENTER_LEFT" spacing="15">
+                    <VBox>
+                        <Label text="Total Clientes" 
+                               style="-fx-font-size: 11px; -fx-text-fill: #6c757d;"/>
+                        <Label fx:id="lblTotalClientes" text="2" 
+                               style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+
+            <!-- VIP -->
+            <VBox GridPane.columnIndex="1" spacing="6" alignment="CENTER_LEFT"
+                  style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 14; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 1);">
+                <HBox alignment="CENTER_LEFT" spacing="15">
+                    <VBox>
+                        <Label text="VIP" 
+                               style="-fx-font-size: 11px; -fx-text-fill: #6c757d;"/>
+                        <Label fx:id="lblVIP" text="1" 
+                               style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #f59e0b;"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+
+            <!-- Regular -->
+            <VBox GridPane.columnIndex="2" spacing="6" alignment="CENTER_LEFT"
+                  style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 14; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 1);">
+                <HBox alignment="CENTER_LEFT" spacing="15">
+                    <VBox>
+                        <Label text="Regular" 
+                               style="-fx-font-size: 11px; -fx-text-fill: #6c757d;"/>
+                        <Label fx:id="lblRegular" text="1" 
+                               style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #10b981;"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+
+            <!-- Corporativo -->
+            <VBox GridPane.columnIndex="3" spacing="6" alignment="CENTER_LEFT"
+                  style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 14; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 1);">
+                <HBox alignment="CENTER_LEFT" spacing="15">
+                    <VBox>
+                        <Label text="Corporativo" 
+                               style="-fx-font-size: 11px; -fx-text-fill: #6c757d;"/>
+                        <Label fx:id="lblCorporativo" text="0" 
+                               style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #8b5cf6;"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+        </GridPane>
+
+        <!-- Tabla de Huéspedes -->
+        <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);">
+            <!-- Botones de acciones generales -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Button fx:id="btnEditarHuesped" text="Editar seleccionado"
+                        style="-fx-background-color: #f59e0b; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 8 16; -fx-cursor: hand;"/>
+                <Button fx:id="btnEliminarHuesped" text="Eliminar seleccionado"
+                        style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 8 16; -fx-cursor: hand;"/>
+            </HBox>
+            <TableView fx:id="tblHuespedes" style="-fx-background-color: transparent;">
+                <columns>
+                    <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
+                    <TableColumn fx:id="colPrimerNombre" text="Primer Nombre" prefWidth="160"/>
+                    <TableColumn fx:id="colSegundoNombre" text="Segundo Nombre" prefWidth="160"/>
+                    <TableColumn fx:id="colPrimerApellido" text="Primer Apellido" prefWidth="160"/>
+                    <TableColumn fx:id="colSegundoApellido" text="Segundo Apellido" prefWidth="160"/>
+                    <TableColumn fx:id="colDocumento" text="Documento" prefWidth="150"/>
+                    <TableColumn fx:id="colTipoDocumento" text="Tipo Documento" prefWidth="140"/>
+                    <TableColumn fx:id="colEmail" text="Email" prefWidth="220"/>
+                    <TableColumn fx:id="colTelefono" text="Teléfono" prefWidth="120"/>
+                    <TableColumn fx:id="colCategoria" text="Categoría" prefWidth="120"/>
+                    <TableColumn fx:id="colEstado" text="Estado" prefWidth="120"/>
+                </columns>
+            </TableView>
+        </VBox>
+
+    </VBox>
+</ScrollPane>

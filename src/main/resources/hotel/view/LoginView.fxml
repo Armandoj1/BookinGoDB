@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.Button?>
+
+<StackPane xmlns="http://javafx.com/javafx/17"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="controller.LoginController"
+           stylesheets="@../styles/styles.css"
+           style="-fx-background-color: linear-gradient(to bottom right, #667eea 0%, #764ba2 100%);">
+
+    <VBox alignment="CENTER" spacing="20" maxWidth="450" maxHeight="550"
+          style="-fx-background-color: white; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 30, 0, 0, 10);">
+        <padding><Insets top="50" right="50" bottom="50" left="50"/></padding>
+
+        <!-- Logo y Título -->
+        <VBox alignment="CENTER" spacing="8">
+            <Label text="BookinnGo" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #667eea;"/>
+            <Label text="Sistema de Gestión Hotelera" style="-fx-font-size: 14px; -fx-text-fill: #6c757d;"/>
+        </VBox>
+
+        <VBox spacing="8" VBox.vgrow="ALWAYS">
+            <VBox.margin><Insets top="20"/></VBox.margin>
+            
+            <!-- Campo Usuario (JavaFX estándar) -->
+            <TextField fx:id="txtUsuario" promptText="Usuario" />
+
+            <!-- Campo Contraseña (JavaFX estándar) -->
+            <PasswordField fx:id="txtContrasena" promptText="Contraseña" onAction="#handleLogin" />
+
+            <!-- Mensaje de Error -->
+            <Label fx:id="lblError" textFill="#dc3545" wrapText="true" visible="false"
+                   style="-fx-font-size: 12px; -fx-padding: 8 0 0 0;"/>
+
+            <!-- Botón Login (JavaFX estándar) -->
+            <Button fx:id="btnLogin" text="Iniciar Sesión" onAction="#handleLogin" maxWidth="Infinity" styleClass="btn-primary">
+                <VBox.margin><Insets top="10"/></VBox.margin>
+            </Button>
+        </VBox>
+
+        <!-- Footer -->
+        <VBox alignment="CENTER" spacing="4">
+            <VBox.margin><Insets top="20"/></VBox.margin>
+            <Label text="BookinnGo v1.0" style="-fx-font-size: 11px; -fx-text-fill: #adb5bd;"/>
+            <Label text="© 2025 Todos los derechos reservados" style="-fx-font-size: 10px; -fx-text-fill: #adb5bd;"/>
+        </VBox>
+    </VBox>
+
+</StackPane>

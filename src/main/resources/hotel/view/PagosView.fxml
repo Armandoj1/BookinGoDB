@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.PagosController"
+            fitToWidth="true"
+            style="-fx-background: #F7F9FC; -fx-background-color: #F7F9FC;">
+
+    <VBox spacing="25" style="-fx-background-color: #F7F9FC;">
+        <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
+
+        <!-- Header -->
+        <HBox alignment="CENTER_LEFT" spacing="0">
+            <VBox HBox.hgrow="ALWAYS">
+                <Label text="Gestión de Pagos" 
+                       style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                <Label text="Administrar comprobantes y pagos" 
+                       style="-fx-font-size: 13px; -fx-text-fill: #6c757d;"/>
+            </VBox>
+            <Button fx:id="btnNuevoComprobante" text="+ Nuevo Comprobante" 
+                    onAction="#handleNuevoComprobante"
+                    styleClass="btn-primary"
+                    style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 12 24; -fx-cursor: hand;"/>
+            <Button fx:id="btnEditarComprobante" text="Editar Comprobante"
+                    onAction="#handleEditarComprobante"
+                    style="-fx-background-color: #10b981; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 12 24; -fx-cursor: hand;">
+                <HBox.margin>
+                    <Insets left="10"/>
+                </HBox.margin>
+            </Button>
+        </HBox>
+
+        <!-- Tabla de Pagos -->
+        <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);">
+            <TableView fx:id="tblPagos" style="-fx-background-color: transparent;">
+                <columns>
+                    <TableColumn fx:id="colIdComprobante" text="ID Comprobante" prefWidth="100"/>
+                    <TableColumn fx:id="colIdReserva" text="ID Reserva" prefWidth="100"/>
+                    <TableColumn fx:id="colTipoComprobante" text="Tipo Comprobante" prefWidth="140"/>
+                    <TableColumn fx:id="colFechaEmision" text="Fecha Emisión" prefWidth="140"/>
+                    <TableColumn fx:id="colMontoTotal" text="Monto Total" prefWidth="140"/>
+                    <TableColumn fx:id="colMetodoPago" text="Método Pago" prefWidth="140"/>
+                    <TableColumn fx:id="colDescripcion" text="Descripción" prefWidth="200"/>
+                    <TableColumn fx:id="colEstado" text="Estado" prefWidth="130"/>
+                </columns>
+            </TableView>
+        </VBox>
+
+    </VBox>
+</ScrollPane>

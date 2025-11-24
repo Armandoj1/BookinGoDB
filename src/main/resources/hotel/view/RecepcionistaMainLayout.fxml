@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.RecepcionistaMainLayoutController"
+            stylesheets="@../styles/styles.css">
+
+    <!-- LADO IZQUIERDO: MENÚ -->
+    <left>
+        <VBox prefWidth="240" style="-fx-background-color: #1e3a8a;">
+            <!-- Header del Menú -->
+            <VBox spacing="2">
+                <padding><Insets top="20" right="15" bottom="15" left="15"/></padding>
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <FontIcon iconLiteral="fas-building" styleClass="menu-icon-title"/>
+                    <Label text="Sistema de Recepción"
+                           style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+                </HBox>
+                <Label text="Hotel Luxe - Recepcionista"
+                       style="-fx-text-fill: #93c5fd; -fx-font-size: 11px; -fx-padding: 0 0 0 28;"/>
+            </VBox>
+
+            <Separator style="-fx-background-color: rgba(255,255,255,0.15); -fx-padding: 0 15;"/>
+
+            <Label text="MENÚ PRINCIPAL" 
+                   style="-fx-text-fill: #93c5fd; -fx-padding: 12 0 8 15; -fx-font-size: 10px; -fx-font-weight: bold;"/>
+
+            <!-- Menú de Navegación -->
+            <VBox spacing="4">
+                <padding><Insets top="0" right="10" bottom="10" left="10"/></padding>
+                
+                <Button maxWidth="Infinity" onAction="#handleDashboard"
+                        styleClass="menu-button" fx:id="btnDashboard">
+                    <graphic>
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <FontIcon iconLiteral="fas-th-large" styleClass="menu-icon"/>
+                            <Label text="Dashboard" style="-fx-text-fill: white; -fx-font-size: 13px;"/>
+                        </HBox>
+                    </graphic>
+                </Button>
+                        
+                <Button maxWidth="Infinity" onAction="#handleReservas"
+                        styleClass="menu-button">
+                    <graphic>
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <FontIcon iconLiteral="fas-calendar-alt" styleClass="menu-icon"/>
+                            <Label text="Reservas" style="-fx-text-fill: white; -fx-font-size: 13px;"/>
+                        </HBox>
+                    </graphic>
+                </Button>
+                        
+                <Button maxWidth="Infinity" onAction="#handleHabitaciones"
+                        styleClass="menu-button">
+                    <graphic>
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <FontIcon iconLiteral="fas-home" styleClass="menu-icon"/>
+                            <Label text="Habitaciones" style="-fx-text-fill: white; -fx-font-size: 13px;"/>
+                        </HBox>
+                    </graphic>
+                </Button>
+                        
+                <Button maxWidth="Infinity" onAction="#handleHuespedes"
+                        styleClass="menu-button">
+                    <graphic>
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                    <FontIcon iconLiteral="fas-users" styleClass="menu-icon"/>
+                            <Label text="Huéspedes" style="-fx-text-fill: white; -fx-font-size: 13px;"/>
+                        </HBox>
+                    </graphic>
+                </Button>
+                        
+                <Button maxWidth="Infinity" onAction="#handlePagos"
+                        styleClass="menu-button">
+                    <graphic>
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <FontIcon iconLiteral="fas-credit-card" styleClass="menu-icon"/>
+                            <Label text="Pagos" style="-fx-text-fill: white; -fx-font-size: 13px;"/>
+                        </HBox>
+                    </graphic>
+                </Button>
+            </VBox>
+
+            <!-- Usuario Actual y Logout -->
+            <VBox spacing="8" VBox.vgrow="ALWAYS" alignment="BOTTOM_LEFT">
+                <padding><Insets top="15" right="15" bottom="20" left="15"/></padding>
+                <Separator style="-fx-background-color: rgba(255,255,255,0.15);"/>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <FontIcon iconLiteral="fas-user-circle" styleClass="menu-icon-title"/>
+                    <VBox>
+                        <Label fx:id="lblUsuarioActual" text="Cargando..."
+                               style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12px;"/>
+                        <Label fx:id="lblRolActual" text="RECEPCIONISTA"
+                               style="-fx-text-fill: #93c5fd; -fx-font-size: 10px;"/>
+                    </VBox>
+                </HBox>
+                <Button maxWidth="Infinity" onAction="#handleCerrarSesion"
+                        style="-fx-background-color: #dc2626; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 8; -fx-cursor: hand;">
+                    <graphic>
+                        <HBox spacing="8" alignment="CENTER">
+                            <FontIcon iconLiteral="fas-sign-out-alt" styleClass="menu-icon"/>
+                            <Label text="Cerrar Sesión" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12px;"/>
+                        </HBox>
+                    </graphic>
+                </Button>
+            </VBox>
+        </VBox>
+    </left>
+
+    <!-- CENTRO: PANEL PARA CARGAR VISTAS -->
+    <center>
+        <StackPane fx:id="contentArea" style="-fx-background-color: #F7F9FC;"/>
+    </center>
+
+</BorderPane>

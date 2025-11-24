@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.HabitacionFormController">
+    <center>
+        <VBox spacing="14" style="-fx-padding: 18;">
+            <Label fx:id="lblTitulo" text="Nueva Habitación" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #1f2937;"/>
+
+            <GridPane hgap="12" vgap="12">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="50"/>
+                    <ColumnConstraints percentWidth="50"/>
+                </columnConstraints>
+
+                <Label text="Número *" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                <TextField fx:id="txtNumero" promptText="101" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+
+                <Label text="Tipo *" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                <ComboBox fx:id="cbTipo" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                <Label text="Precio (COP) *" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                <TextField fx:id="txtPrecio" promptText="120000" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+
+                <Label text="Estado *" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                <ComboBox fx:id="cbEstado" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+
+                <Label text="Capacidad *" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+                <TextField fx:id="txtCapacidad" promptText="2" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+
+                <Label text="Piso *" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                <TextField fx:id="txtPiso" promptText="1" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+
+                <Label text="Descripción *" GridPane.columnIndex="0" GridPane.rowIndex="6"/>
+                <TextArea fx:id="txtDescripcion" GridPane.columnIndex="0" GridPane.rowIndex="7" GridPane.columnSpan="2" prefRowCount="3" promptText="Descripción detallada de la habitación"/>
+
+                <Label text="Características *" GridPane.columnIndex="0" GridPane.rowIndex="8"/>
+                <TextArea fx:id="txtCaracteristicas" GridPane.columnIndex="0" GridPane.rowIndex="9" GridPane.columnSpan="2" prefRowCount="3" promptText="TV, WiFi, Aire acondicionado..."/>
+            </GridPane>
+
+            <HBox spacing="10" alignment="CENTER_RIGHT">
+                <Region HBox.hgrow="ALWAYS" />
+                <Button text="Cancelar" onAction="#handleCancelar"
+                        style="-fx-background-color: #e5e7eb; -fx-text-fill: #111827; -fx-background-radius: 8; -fx-padding: 8 16;"/>
+                <Button fx:id="btnGuardar" text="Crear Habitación" onAction="#handleGuardar"
+                        style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-background-radius: 8; -fx-padding: 8 16; -fx-font-weight: bold;"/>
+            </HBox>
+        </VBox>
+    </center>
+</BorderPane>

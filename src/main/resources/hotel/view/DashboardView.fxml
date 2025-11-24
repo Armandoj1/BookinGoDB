@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.DashboardController"
+            fitToWidth="true">
+    <content>
+        <VBox spacing="16">
+            <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+            <Label text="Dashboard - Recepción" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+            <Label text="Resumen del estado actual del hotel"
+                   style="-fx-text-fill: #555;"/>
+
+            <!-- aquí luego puedes poner HBox con tarjetas de check-in, check-out, etc. -->
+        </VBox>
+    </content>
+</ScrollPane>

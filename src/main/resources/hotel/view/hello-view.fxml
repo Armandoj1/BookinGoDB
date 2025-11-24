@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.MainLayoutController">
+
+    <!-- LADO IZQUIERDO: MENÚ -->
+    <left>
+        <VBox prefWidth="260" style="-fx-background-color: #133B88;">
+            <VBox spacing="4">
+                <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+                <Label text="Sistema de Recepción"
+                       style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;"/>
+                <Label text="Hotel Luxe - Recepcionista"
+                       style="-fx-text-fill: #d0d7ff; -fx-font-size: 12px;"/>
+            </VBox>
+
+            <Label text="Menú Principal"
+                   style="-fx-text-fill: #d0d7ff; -fx-padding: 0 0 0 20;"/>
+
+            <VBox spacing="4">
+                <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+                <Button text="Dashboard" maxWidth="Infinity"
+                        onAction="#handleDashboard"
+                        styleClass="menu-button"/>
+                <Button text="Reservas" maxWidth="Infinity"
+                        onAction="#handleReservas"
+                        styleClass="menu-button"/>
+                <Button text="Habitaciones" maxWidth="Infinity"
+                        onAction="#handleHabitaciones"
+                        styleClass="menu-button"/>
+                <Button text="Huéspedes" maxWidth="Infinity"
+                        onAction="#handleHuespedes"
+                        styleClass="menu-button"/>
+                <Button text="Pagos" maxWidth="Infinity"
+                        onAction="#handlePagos"
+                        styleClass="menu-button"/>
+
+                <!-- SOLO ADMIN: -->
+                <Button text="Trabajadores" maxWidth="Infinity"
+                        onAction="#handleTrabajadores"
+                        styleClass="menu-button"/>
+                <Button text="Roles" maxWidth="Infinity"
+                        onAction="#handleRoles"
+                        styleClass="menu-button"/>
+            </VBox>
+
+            <VBox spacing="8" VBox.vgrow="ALWAYS" alignment="BOTTOM_LEFT">
+                <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+                <Separator/>
+                <Label fx:id="lblUsuarioActual" text="Carlos Mendoza"
+                       style="-fx-text-fill: white; -fx-font-weight: bold;"/>
+                <Label fx:id="lblRolActual" text="ADMINISTRADOR"
+                       style="-fx-text-fill: #d0d7ff; -fx-font-size: 11px;"/>
+                <Button text="Cerrar Sesión" maxWidth="Infinity"
+                        onAction="#handleCerrarSesion"
+                        style="-fx-background-color: #DB2B2B; -fx-text-fill: white; -fx-font-weight: bold;"/>
+            </VBox>
+        </VBox>
+    </left>
+
+    <!-- CENTRO: PANEL BLANCO PARA CARGAR VISTAS -->
+    <center>
+        <StackPane fx:id="contentArea" style="-fx-background-color: #F7F9FC;"/>
+    </center>
+
+</BorderPane>

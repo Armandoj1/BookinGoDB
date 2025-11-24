@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.AdminMainLayoutController"
+            stylesheets="@../styles/styles.css">
+
+    <!-- LADO IZQUIERDO: MENÚ -->
+    <left>
+        <VBox prefWidth="260" styleClass="sidebar" style="-fx-background-color: linear-gradient(to bottom, #1a237e, #283593);">
+            <!-- Header del Menú -->
+            <VBox spacing="4">
+                <padding><Insets top="25" right="20" bottom="20" left="20"/></padding>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <FontIcon iconLiteral="fas-building" styleClass="menu-icon-title"/>
+                    <VBox>
+                        <Label text="BookinnGo"
+                               style="-fx-text-fill: white; -fx-font-size: 22px; -fx-font-weight: bold;"/>
+                        <Label text="Panel de Administración"
+                               style="-fx-text-fill: #b39ddb; -fx-font-size: 12px;"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+
+            <Separator style="-fx-background-color: rgba(255,255,255,0.1);"/>
+
+            <Label text="NAVEGACIÓN" style="-fx-text-fill: #b39ddb; -fx-padding: 15 0 10 20; -fx-font-size: 11px;"/>
+
+            <!-- Menú de Navegación -->
+            <VBox spacing="4">
+                <padding><Insets top="0" right="10" bottom="10" left="10"/></padding>
+                
+                <Button text="Dashboard" maxWidth="Infinity"
+                        onAction="#handleDashboard"
+                        styleClass="menu-button" fx:id="btnDashboard">
+                    <graphic>
+                        <FontIcon iconLiteral="fas-th-large" iconSize="16" styleClass="menu-icon"/>
+                    </graphic>
+                </Button>
+                        
+                <Button text="Reservas" maxWidth="Infinity"
+                        onAction="#handleReservas"
+                        styleClass="menu-button">
+                    <graphic>
+                        <FontIcon iconLiteral="fas-calendar-alt" iconSize="16" styleClass="menu-icon"/>
+                    </graphic>
+                </Button>
+                        
+                <Button text="Habitaciones" maxWidth="Infinity"
+                        onAction="#handleHabitaciones"
+                        styleClass="menu-button">
+                    <graphic>
+                    <FontIcon iconLiteral="fas-home" iconSize="16" styleClass="menu-icon"/>
+                    </graphic>
+                </Button>
+                        
+                <Button text="Huéspedes" maxWidth="Infinity"
+                        onAction="#handleHuespedes"
+                        styleClass="menu-button">
+                    <graphic>
+                        <FontIcon iconLiteral="fas-user" iconSize="16" styleClass="menu-icon"/>
+                    </graphic>
+                </Button>
+                        
+                <Button text="Pagos" maxWidth="Infinity"
+                        onAction="#handlePagos"
+                        styleClass="menu-button">
+                    <graphic>
+                        <FontIcon iconLiteral="fas-credit-card" iconSize="16" styleClass="menu-icon"/>
+                    </graphic>
+                </Button>
+            </VBox>
+
+            <Label text="ADMINISTRACIÓN" style="-fx-text-fill: #b39ddb; -fx-padding: 15 0 10 20; -fx-font-size: 11px;"/>
+
+            <VBox spacing="4">
+                <padding><Insets top="0" right="10" bottom="10" left="10"/></padding>
+                
+                <Button text="Trabajadores" maxWidth="Infinity"
+                        onAction="#handleTrabajadores"
+                        styleClass="menu-button">
+                    <graphic>
+                    <FontIcon iconLiteral="fas-users" iconSize="16" styleClass="menu-icon"/>
+                    </graphic>
+                </Button>
+                        
+                <Button text="Roles" maxWidth="Infinity"
+                        onAction="#handleRoles"
+                        styleClass="menu-button">
+                    <graphic>
+                        <FontIcon iconLiteral="fas-tags" iconSize="16" styleClass="menu-icon"/>
+                    </graphic>
+                </Button>
+                        
+                
+            </VBox>
+
+            <!-- Usuario Actual y Logout -->
+            <VBox spacing="10" VBox.vgrow="ALWAYS" alignment="BOTTOM_LEFT">
+                <padding><Insets top="20" right="20" bottom="25" left="20"/></padding>
+                <Separator style="-fx-background-color: rgba(255,255,255,0.1);"/>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                        <FontIcon iconLiteral="fas-user-circle" styleClass="menu-icon-title"/>
+                    <VBox>
+                        <Label fx:id="lblUsuarioActual" text="Cargando..."
+                               style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;"/>
+                        <Label fx:id="lblRolActual" text="ADMINISTRADOR"
+                               style="-fx-text-fill: #b39ddb; -fx-font-size: 11px;"/>
+                    </VBox>
+                </HBox>
+                <Button text="Cerrar Sesión" maxWidth="Infinity"
+                        onAction="#handleCerrarSesion"
+                        styleClass="btn-danger">
+                    <graphic>
+                        <FontIcon iconLiteral="fas-sign-out-alt" iconSize="16" styleClass="menu-icon"/>
+                    </graphic>
+                </Button>
+            </VBox>
+        </VBox>
+    </left>
+
+    <!-- CENTRO: PANEL PARA CARGAR VISTAS -->
+    <center>
+        <StackPane fx:id="contentArea" style="-fx-background-color: #F7F9FC;"/>
+    </center>
+
+</BorderPane>
