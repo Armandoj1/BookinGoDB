@@ -24,7 +24,7 @@ public class ClienteDaoImpl implements IClienteDao{
 
     @Override
     public void create(Cliente cliente) throws SQLException {
-        String sql = "INSERT INTO clientes (primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, " +
+        String sql = "INSERT INTO CLIENTE (primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, " +
                      "tipo_documento, documento, estado, email, telefono, categoria) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -110,7 +110,7 @@ public class ClienteDaoImpl implements IClienteDao{
         // Borrado lógico a nivel PERSONA: desactivar por id_cliente
         // Actualiza PERSONA.estado haciendo JOIN con clientes para ubicar la persona
         String sql = "UPDATE p SET p.estado = 'INACTIVO' " +
-                     "FROM PERSONA p INNER JOIN clientes c ON p.id_persona = c.id_persona " +
+                     "FROM PERSONA p INNER JOIN CLIENTE c ON p.id_persona = c.id_persona " +
                      "WHERE c.id_cliente = ?";
 
         try (Connection conn = conexion.connect();
@@ -125,7 +125,7 @@ public class ClienteDaoImpl implements IClienteDao{
     public void activate(Long id) throws SQLException {
         // Activación lógica a nivel PERSONA: activar por id_cliente
         String sql = "UPDATE p SET p.estado = 'ACTIVO' " +
-                     "FROM PERSONA p INNER JOIN clientes c ON p.id_persona = c.id_persona " +
+                     "FROM PERSONA p INNER JOIN CLIENTE c ON p.id_persona = c.id_persona " +
                      "WHERE c.id_cliente = ?";
 
         try (Connection conn = conexion.connect();
