@@ -111,12 +111,26 @@ public class TrabajadorServiceImpl implements ITrabajadorService {
             throw new IllegalArgumentException("Tipo de documento inválido. Debe ser CC, TI, CE, PP o NIT.");
         }
 
-        // Documento
+        // Documento: CC entre 6 y 11 dígitos; otros tipos 5 a 20 caracteres
         if (esVacio(t.getDocumento())) {
             throw new IllegalArgumentException("El documento es obligatorio.");
         }
-        if (t.getDocumento().length() < 5 || t.getDocumento().length() > 20) {
-            throw new IllegalArgumentException("El documento debe tener entre 5 y 20 caracteres.");
+        String doc = t.getDocumento().trim();
+        String tipoDocT = t.getTipoDocumento() == null ? "" : t.getTipoDocumento().trim().toUpperCase();
+        if ("CC".equals(tipoDocT)) {
+            if (!doc.matches("^\\d{6,11}$")) {
+                throw new IllegalArgumentException("La CC debe tener entre 6 y 11 dígitos, sin letras.");
+            }
+        } else {
+            if (doc.length() < 5 || doc.length() > 20) {
+                throw new IllegalArgumentException("El documento debe tener entre 5 y 20 caracteres.");
+            }
+        }
+
+        // Prevalidación de unicidad por documento
+        Trabajador porDoc = trabajadorDao.findByDocumento(doc);
+        if (porDoc != null && (esCreacion || !porDoc.getIdTrabajador().equals(t.getIdTrabajador()))) {
+            throw new IllegalArgumentException("Ya existe una persona registrada con ese documento.");
         }
 
         // Estado
@@ -124,18 +138,29 @@ public class TrabajadorServiceImpl implements ITrabajadorService {
             throw new IllegalArgumentException("Estado inválido. Debe ser ACTIVO, INACTIVO o SUSPENDIDO.");
         }
 
-        // Email
+        // Email con regex estándar
         if (esVacio(t.getEmail())) {
             throw new IllegalArgumentException("El email es obligatorio.");
         }
-        if (!t.getEmail().contains("@")) { // puedes mejorar con regex si quieres
+        String email = t.getEmail().trim();
+        if (!email.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
             throw new IllegalArgumentException("El email no tiene un formato válido.");
         }
+        // Prevalidación de unicidad por email
+        Trabajador porEmail = trabajadorDao.findByEmail(email);
+        if (porEmail != null && (esCreacion || !porEmail.getIdTrabajador().equals(t.getIdTrabajador()))) {
+            throw new IllegalArgumentException("Ya existe una persona registrada con ese email.");
+        }
 
-        // Teléfono (si usas rango similar a PERSONA)
-        long tel = t.getTelefono();
-        if (tel < 3000000000L || tel > 3999999999L) {
-            throw new IllegalArgumentException("El teléfono debe estar entre 3000000000 y 3999999999.");
+        // Teléfono: debe iniciar con 3 y tener 10 dígitos
+        String telStr = String.valueOf(t.getTelefono());
+        if (!telStr.matches("^3\\d{9}$")) {
+            throw new IllegalArgumentException("El teléfono debe iniciar con 3 y tener 10 dígitos.");
+        }
+        // Prevalidación de unicidad por teléfono
+        Trabajador porTel = trabajadorDao.findByTelefono(t.getTelefono());
+        if (porTel != null && (esCreacion || !porTel.getIdTrabajador().equals(t.getIdTrabajador()))) {
+            throw new IllegalArgumentException("Ya existe una persona registrada con ese teléfono.");
         }
 
         // Sueldo (si sigues la regla de sueldo mínimo/máximo)
@@ -143,17 +168,31 @@ public class TrabajadorServiceImpl implements ITrabajadorService {
             throw new IllegalArgumentException("El sueldo debe estar entre 1.300.000 y 50.000.000.");
         }
 
-        // Usuario/contraseña: valida longitud SOLO en creación,
-        // durante actualización permite conservar usuarios históricos más cortos
-        if (esCreacion && !esVacio(t.getUsuario()) && t.getUsuario().length() < 5) {
-            throw new IllegalArgumentException("El usuario debe tener al menos 5 caracteres.");
-        }
+        // Credenciales para roles administrativos (ADMINISTRADOR, RECEPCIONISTA)
+        String nombreRol = t.getRol() != null && t.getRol().getNombreRol() != null
+                ? t.getRol().getNombreRol().trim().toUpperCase() : "";
+        boolean rolAdmin = nombreRol.equals("ADMINISTRADOR") || nombreRol.equals("RECEPCIONISTA");
 
-        // En creación: validar que el usuario no esté repetido (si se informó)
-        if (esCreacion && !esVacio(t.getUsuario())) {
+        if (rolAdmin) {
+            // Para ADMINISTRADOR/RECEPCIONISTA, usuario y contraseña son obligatorios
+            if (esVacio(t.getUsuario())) {
+                throw new IllegalArgumentException("Para roles administrativos (ADMINISTRADOR/RECEPCIONISTA) el usuario es obligatorio.");
+            }
+            if (t.getUsuario().length() < 5) {
+                throw new IllegalArgumentException("El usuario debe tener al menos 5 caracteres.");
+            }
             Trabajador existente = trabajadorDao.findByUsuario(t.getUsuario());
-            if (existente != null) {
+            if (existente != null && (esCreacion || !existente.getIdTrabajador().equals(t.getIdTrabajador()))) {
                 throw new IllegalArgumentException("Ya existe un trabajador con ese usuario.");
+            }
+
+            if (esVacio(t.getContrasena())) {
+                throw new IllegalArgumentException("Para roles administrativos (ADMINISTRADOR/RECEPCIONISTA) la contraseña es obligatoria.");
+            }
+        } else {
+            // Para roles no administrativos, no deben tener credenciales
+            if (!esVacio(t.getUsuario()) || !esVacio(t.getContrasena())) {
+                throw new IllegalArgumentException("Este rol no requiere credenciales. Deje usuario y contraseña vacíos.");
             }
         }
 

@@ -70,7 +70,7 @@ public class MainLayoutController {
 
     @FXML
     private void handleRoles() {
-        // loadView("/hotel/view/RolesView.fxml");
+        loadView("/hotel/view/RolesView.fxml");
     }
 
     @FXML

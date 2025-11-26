@@ -73,10 +73,10 @@ public class HabitacionServiceImpl implements IHabitacionService {
 
     @Override
     public void cambiarEstado(Long idHabitacion, String nuevoEstado) throws SQLException {
-        if (!esDeLista(nuevoEstado,
-                "DISPONIBLE", "OCUPADA", "LIMPIEZA", "MANTENIMIENTO", "FUERA_SERVICIO")) {
+        // Estados válidos: DISPONIBLE, OCUPADO
+        if (!esDeLista(nuevoEstado, "DISPONIBLE", "OCUPADO")) {
             throw new IllegalArgumentException(
-                    "Estado de habitación inválido. Debe ser DISPONIBLE, OCUPADA, LIMPIEZA, MANTENIMIENTO o FUERA_SERVICIO."
+                    "Estado de habitación inválido. Debe ser DISPONIBLE u OCUPADO."
             );
         }
 

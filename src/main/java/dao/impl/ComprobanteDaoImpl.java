@@ -39,7 +39,22 @@ public class ComprobanteDaoImpl implements IComprobanteDao {
             stmt.setString(6, comprobante.getDescripcion());
             stmt.setString(7, comprobante.getEstado());
 
-            stmt.executeUpdate();
+            try {
+                stmt.executeUpdate();
+            } catch (SQLException ex) {
+                // SQL Server recursion limit error (Msg 217) or similar messages
+                String msg = ex.getMessage() != null ? ex.getMessage() : "";
+                int code = ex.getErrorCode();
+                if (code == 217 || msg.toLowerCase().contains("maximum stored procedure")
+                        || msg.toLowerCase().contains("nesting level exceeded")) {
+                    throw new SQLException(
+                            "Se detectó un bucle en procedimientos/trigger de la base de datos al guardar el comprobante. " +
+                            "El comprobante no fue guardado. Contacta al administrador para revisar los triggers o procedimientos involucrados.",
+                            ex.getSQLState(), ex.getErrorCode());
+                }
+                // Reenviar otros errores tal cual
+                throw ex;
+            }
 
             try (ResultSet rs = stmt.getGeneratedKeys()) {
                 if (rs.next()) {
@@ -86,7 +101,20 @@ public class ComprobanteDaoImpl implements IComprobanteDao {
             stmt.setString(7, comprobante.getEstado());
             stmt.setLong(8, comprobante.getIdComprobante());
 
-            stmt.executeUpdate();
+            try {
+                stmt.executeUpdate();
+            } catch (SQLException ex) {
+                String msg = ex.getMessage() != null ? ex.getMessage() : "";
+                int code = ex.getErrorCode();
+                if (code == 217 || msg.toLowerCase().contains("maximum stored procedure")
+                        || msg.toLowerCase().contains("nesting level exceeded")) {
+                    throw new SQLException(
+                            "Se detectó un bucle en procedimientos/trigger de la base de datos al actualizar el comprobante. " +
+                            "La operación fue cancelada. Contacta al administrador para revisar los triggers o procedimientos involucrados.",
+                            ex.getSQLState(), ex.getErrorCode());
+                }
+                throw ex;
+            }
         }
     }
 

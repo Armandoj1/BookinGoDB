@@ -111,6 +111,82 @@ public class TrabajadoresController {
         cbEstado.getItems().addAll("ACTIVO", "INACTIVO", "SUSPENDIDO");
         cbEstado.setValue("ACTIVO");
 
+        // Etiquetas de error
+        Label lblTelError = new Label("El teléfono debe iniciar con 3 y tener 10 dígitos");
+        lblTelError.setStyle("-fx-text-fill: red;");
+        lblTelError.setVisible(false);
+        Label lblEmailError = new Label("Email debe terminar en gmail.com u hotmail.com");
+        lblEmailError.setStyle("-fx-text-fill: red;");
+        lblEmailError.setVisible(false);
+        Label lblDocError = new Label("Debes poner un documento válido según el tipo");
+        lblDocError.setStyle("-fx-text-fill: red;");
+        lblDocError.setVisible(false);
+
+        // Filtro Teléfono
+        java.util.function.UnaryOperator<javafx.scene.control.TextFormatter.Change> phoneFilter = change -> {
+            String newText = change.getControlNewText();
+            if (!newText.matches("\\d*")) return null;
+            if (newText.length() > 10) return null;
+            if (!newText.isEmpty() && newText.charAt(0) != '3') return null;
+            return change;
+        };
+        txtTelefono.setTextFormatter(new TextFormatter<>(phoneFilter));
+        txtTelefono.textProperty().addListener((o, ov, nv) -> lblTelError.setVisible(nv.length() != 10));
+
+        // Filtro Email
+        java.util.function.UnaryOperator<javafx.scene.control.TextFormatter.Change> emailFilter = change -> {
+            String newText = change.getControlNewText();
+            if (!newText.matches("[A-Za-z0-9._%+\\-@]*")) return null;
+            int atIndex = newText.indexOf('@');
+            if (atIndex >= 0) {
+                String dom = newText.substring(atIndex + 1).toLowerCase();
+                if (!dom.isEmpty() && !("gmail.com".startsWith(dom) || "hotmail.com".startsWith(dom))) {
+                    return null;
+                }
+            }
+            return change;
+        };
+        txtEmail.setTextFormatter(new TextFormatter<>(emailFilter));
+        txtEmail.textProperty().addListener((o, ov, nv) -> {
+            boolean valid = nv.matches("^[\\w.%+\\-]+@(gmail|hotmail)\\.com$");
+            lblEmailError.setVisible(!valid);
+        });
+
+        // Filtro Documento y validación
+        java.util.function.UnaryOperator<javafx.scene.control.TextFormatter.Change> docFilter = change -> {
+            String newText = change.getControlNewText();
+            String tipo = cbTipoDocumento.getValue();
+            int max = 10;
+            String pattern = "[A-Za-z0-9]*";
+            if ("CC".equals(tipo) || "TI".equals(tipo) || "DNI".equals(tipo)) {
+                pattern = "\\d*"; max = 10;
+            } else if ("NIT".equals(tipo)) {
+                pattern = "[\\d-]*"; max = 12;
+            } else if ("CE".equals(tipo) || "PP".equals(tipo)) {
+                if (change.getText() != null) { change.setText(change.getText().toUpperCase()); }
+                pattern = "[A-Z0-9]*"; max = 12;
+            }
+            if (newText.length() > max) return null;
+            if (!newText.matches(pattern)) return null;
+            return change;
+        };
+        txtDocumento.setTextFormatter(new TextFormatter<>(docFilter));
+        final Runnable docValidate = () -> {
+            String tipo = cbTipoDocumento.getValue();
+            String doc = txtDocumento.getText().trim();
+            boolean ok;
+            if ("CC".equals(tipo) || "TI".equals(tipo) || "DNI".equals(tipo)) {
+                ok = doc.matches("\\d{10}");
+            } else if ("NIT".equals(tipo)) {
+                ok = doc.matches("[\\d-]{9,12}");
+            } else { // CE/PP
+                ok = doc.matches("[A-Z0-9]{8,12}");
+            }
+            lblDocError.setVisible(!ok);
+        };
+        txtDocumento.textProperty().addListener((o, ov, nv) -> docValidate.run());
+        cbTipoDocumento.valueProperty().addListener((o, ov, nv) -> docValidate.run());
+
         ComboBox<Rol> cbRol = new ComboBox<>();
         cbRol.setButtonCell(new ListCell<>() {
             @Override
@@ -143,22 +219,86 @@ public class TrabajadoresController {
         txtContrasena.setPromptText("Contraseña");
         txtSueldo.setPromptText("Sueldo");
 
+        // Bloquear usuario/contraseña si el rol NO es administrativo
+        java.util.function.Consumer<Rol> applyRoleFields = r -> {
+            String nombreRol = r != null && r.getNombreRol() != null ? r.getNombreRol().trim().toUpperCase() : "";
+            boolean admin = nombreRol.equals("ADMINISTRADOR") || nombreRol.equals("RECEPCIONISTA");
+            txtUsuario.setDisable(!admin);
+            txtContrasena.setDisable(!admin);
+            if (!admin) {
+                txtUsuario.clear();
+                txtContrasena.clear();
+            }
+        };
+        cbRol.valueProperty().addListener((o, ov, nv) -> applyRoleFields.accept(nv));
+
         grid.addRow(0, new Label("Primer Nombre *"), txtPrimerNombre);
         grid.addRow(1, new Label("Segundo Nombre"), txtSegundoNombre);
         grid.addRow(2, new Label("Primer Apellido *"), txtPrimerApellido);
         grid.addRow(3, new Label("Segundo Apellido"), txtSegundoApellido);
         grid.addRow(4, new Label("Tipo Documento *"), cbTipoDocumento);
         grid.addRow(5, new Label("Número Documento *"), txtDocumento);
-        grid.addRow(6, new Label("Teléfono *"), txtTelefono);
-        grid.addRow(7, new Label("Email *"), txtEmail);
-        grid.addRow(8, new Label("Estado"), cbEstado);
-        grid.addRow(9, new Label("Rol *"), cbRol);
-        grid.addRow(10, new Label("Usuario *"), txtUsuario);
-        grid.addRow(11, new Label("Contraseña *"), txtContrasena);
-        grid.addRow(12, new Label("Sueldo *"), txtSueldo);
+        grid.add(lblDocError, 1, 6);
+        grid.addRow(7, new Label("Teléfono *"), txtTelefono);
+        grid.add(lblTelError, 1, 8);
+        grid.addRow(9, new Label("Email *"), txtEmail);
+        grid.add(lblEmailError, 1, 10);
+        grid.addRow(11, new Label("Estado"), cbEstado);
+        grid.addRow(12, new Label("Rol *"), cbRol);
+        grid.addRow(13, new Label("Usuario *"), txtUsuario);
+        Label lblUserError = new Label("Para ADMINISTRADOR/RECEPCIONISTA el usuario es obligatorio (≥5)");
+        lblUserError.setStyle("-fx-text-fill: red;");
+        lblUserError.setVisible(false);
+        grid.add(lblUserError, 1, 14);
+        grid.addRow(15, new Label("Contraseña *"), txtContrasena);
+        Label lblPwdError = new Label("Para ADMINISTRADOR/RECEPCIONISTA la contraseña es obligatoria");
+        lblPwdError.setStyle("-fx-text-fill: red;");
+        lblPwdError.setVisible(false);
+        grid.add(lblPwdError, 1, 16);
+        grid.addRow(17, new Label("Sueldo *"), txtSueldo);
 
         dialog.getDialogPane().setContent(grid);
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        // Evitar cierre si teléfono/email/documento no cumplen
+        Button btnOk = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+        btnOk.addEventFilter(javafx.event.ActionEvent.ACTION, event -> {
+            String tel = txtTelefono.getText().trim();
+            String email = txtEmail.getText().trim();
+            docValidate.run();
+            if (lblDocError.isVisible()) { event.consume(); return; }
+            if (tel.length() != 10) { lblTelError.setVisible(true); event.consume(); return; }
+            if (!email.matches("^[\\w.%+\\-]+@(gmail|hotmail)\\.com$")) { lblEmailError.setVisible(true); event.consume(); return; }
+
+            // Validación: si el rol es administrativo, exigir contraseña, y no cerrar el diálogo
+            Rol rolSel = cbRol.getValue();
+            String nombreRol = rolSel != null && rolSel.getNombreRol() != null ? rolSel.getNombreRol().trim().toUpperCase() : "";
+            boolean rolAdmin = nombreRol.equals("ADMINISTRADOR") || nombreRol.equals("RECEPCIONISTA");
+            if (rolAdmin) {
+                String usr = txtUsuario.getText();
+                if (usr == null || usr.trim().isEmpty() || usr.trim().length() < 5) {
+                    lblUserError.setVisible(true);
+                    event.consume();
+                    return;
+                } else {
+                    lblUserError.setVisible(false);
+                }
+                String pwd = txtContrasena.getText();
+                if (pwd == null || pwd.trim().isEmpty()) {
+                    lblPwdError.setVisible(true);
+                    event.consume();
+                    return;
+                } else {
+                    lblPwdError.setVisible(false);
+                }
+            } else {
+                lblUserError.setVisible(false);
+                lblPwdError.setVisible(false);
+            }
+        });
+
+        // Estado inicial de bloqueo según rol seleccionado al abrir el diálogo
+        applyRoleFields.accept(cbRol.getValue());
 
         dialog.showAndWait().ifPresent(bt -> {
             if (bt == ButtonType.OK) {
@@ -176,11 +316,11 @@ public class TrabajadoresController {
                     String sueldoS = txtSueldo.getText().trim();
 
                     if (pNom.isEmpty() || pApe.isEmpty() || tipoDoc == null || tipoDoc.isEmpty() || doc.isEmpty() ||
-                        email.isEmpty() || telS.isEmpty() || usuario.isEmpty() || contrasena.isEmpty() || sueldoS.isEmpty() || rolSel == null) {
+                        email.isEmpty() || telS.isEmpty() || sueldoS.isEmpty() || rolSel == null) {
                         Alert warn = new Alert(Alert.AlertType.WARNING);
                         warn.setTitle("Validación");
                         warn.setHeaderText(null);
-                        warn.setContentText("Completa todos los campos obligatorios.");
+                        warn.setContentText("Completa todos los campos obligatorios (usuario/contraseña según rol).");
                         warn.showAndWait();
                         return;
                     }
@@ -498,6 +638,7 @@ public class TrabajadoresController {
         a.setTitle("Error");
         a.setHeaderText(null);
         a.setContentText(msg);
-        a.showAndWait();
+    a.showAndWait();
     }
+
 }

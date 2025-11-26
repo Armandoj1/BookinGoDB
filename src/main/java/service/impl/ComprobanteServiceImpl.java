@@ -87,12 +87,10 @@ public class ComprobanteServiceImpl implements IComprobanteService {
             throw new IllegalArgumentException("El monto total no puede ser negativo.");
         }
 
-        // Tipo de comprobante (chk_tipo_comprobante)
-        if (!esDeLista(c.getTipoComprobante(),
-                "FACTURA", "RECIBO", "NOTA_CREDITO", "NOTA_DEBITO")) {
+        // Tipo de comprobante permitido: FACTURA o RECIBO
+        if (!esDeLista(c.getTipoComprobante(), "FACTURA", "RECIBO")) {
             throw new IllegalArgumentException(
-                    "Tipo de comprobante inválido. " +
-                    "Debe ser FACTURA, RECIBO, NOTA_CREDITO o NOTA_DEBITO."
+                    "Tipo de comprobante inválido. Debe ser FACTURA o RECIBO."
             );
         }
 
@@ -104,12 +102,10 @@ public class ComprobanteServiceImpl implements IComprobanteService {
             );
         }
 
-        // Estado (chk_estado_comprobante)
-        if (!esDeLista(c.getEstado(),
-                "EMITIDO", "PENDIENTE", "ENPROCESO", "PAGADO", "ANULADO")) {
+        // Estado permitido del comprobante: EMITIDO, PAGADO, CANCELADO
+        if (!esDeLista(c.getEstado(), "EMITIDO", "PAGADO", "CANCELADO")) {
             throw new IllegalArgumentException(
-                    "Estado de comprobante inválido. " +
-                    "Debe ser EMITIDO, PENDIENTE, ENPROCESO, PAGADO o ANULADO."
+                    "Estado de comprobante inválido. Debe ser EMITIDO, PAGADO o CANCELADO."
             );
         }
 

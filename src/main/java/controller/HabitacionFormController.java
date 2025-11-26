@@ -1,12 +1,10 @@
 package controller;
 
-import ConexionBase.Conexion;
-import dao.impl.HabitacionDaoImpl;
+import service.AppContext;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import model.Habitacion;
-import service.DatabaseConfig;
-import service.impl.HabitacionServiceImpl;
+import service.IHabitacionService;
 
 import java.sql.SQLException;
 
@@ -23,22 +21,21 @@ public class HabitacionFormController {
     @FXML private TextArea txtCaracteristicas;
     @FXML private Button btnGuardar;
 
-    private HabitacionServiceImpl habitacionService;
+    private IHabitacionService habitacionService;
     private Habitacion habitacionEdicion;
     private Runnable onSaved;
 
     @FXML
     public void initialize() {
         cbTipo.getItems().setAll("SENCILLA", "DOBLE", "SUITE", "FAMILIAR", "PRESIDENCIAL");
-        cbEstado.getItems().setAll("DISPONIBLE", "OCUPADA", "LIMPIEZA", "MANTENIMIENTO", "FUERA_SERVICIO");
+        // Estados válidos de HABITACION: DISPONIBLE, OCUPADO
+        cbEstado.getItems().setAll("DISPONIBLE", "OCUPADO");
 
-        // Dependencias por defecto
-        Conexion conexion = new Conexion(DatabaseConfig.getDatabase());
-        HabitacionDaoImpl dao = new HabitacionDaoImpl(conexion);
-        habitacionService = new HabitacionServiceImpl(dao);
+        // Dependencia por defecto desde AppContext (DIP)
+        habitacionService = AppContext.getHabitacionService();
     }
 
-    public void initDependencies(HabitacionServiceImpl service) {
+    public void initDependencies(IHabitacionService service) {
         if (service != null) {
             this.habitacionService = service;
         }

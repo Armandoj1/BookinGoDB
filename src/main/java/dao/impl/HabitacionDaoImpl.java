@@ -125,7 +125,7 @@ public class HabitacionDaoImpl implements IHabitacionDao {
     @Override
     public List<Habitacion> findByEstado(String estado) throws SQLException {
         List<Habitacion> HABITACION = new ArrayList<>();
-        String sql = "SELECT * FROM HABITACION WHERE estado = ?";
+        String sql = "SELECT * FROM HABITACION WHERE UPPER(estado) = UPPER(?)";
 
         try (Connection conn = conexion.connect();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {

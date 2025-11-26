@@ -81,14 +81,19 @@ public class ReservasController {
     private void cargarMetricas() {
         try {
             int total = reservaDao.countAll();
-            int confirmadas = reservaDao.countByEstado("CONFIRMADA");
-            int activas = reservaDao.countByEstado("ACTIVO") + reservaDao.countByEstado("ACTIVA");
-            int pendientesCheckIn = reservaDao.countByEstado("PENDIENTE") + reservaDao.countByEstado("PENDIENTE_CHECKIN");
+            // Confirmadas deben mostrar EN_PROCESO (compatibilidad con EN_CURSO)
+            int confirmadas = reservaDao.countByEstado("EN_PROCESO") + reservaDao.countByEstado("EN_CURSO");
+
+            // Pendientes deben mostrar las reservas en ACTIVA/ACTIVO
+            int pendientes = reservaDao.countByEstado("ACTIVO") + reservaDao.countByEstado("ACTIVA");
+
+            // El otro card debe mostrar las FINALIZADAS
+            int finalizadas = reservaDao.countByEstado("FINALIZADA");
 
             lblTotalReservas.setText(String.valueOf(total));
             lblConfirmadas.setText(String.valueOf(confirmadas));
-            lblActivas.setText(String.valueOf(activas));
-            lblPendientesCheckIn.setText(String.valueOf(pendientesCheckIn));
+            lblPendientesCheckIn.setText(String.valueOf(pendientes));
+            lblActivas.setText(String.valueOf(finalizadas));
         } catch (SQLException e) {
             lblTotalReservas.setText("0");
             lblConfirmadas.setText("0");

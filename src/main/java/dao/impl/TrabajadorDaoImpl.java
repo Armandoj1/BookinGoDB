@@ -44,7 +44,14 @@ public class TrabajadorDaoImpl implements ITrabajadorDao {
             stmt.setDouble(12, trabajador.getSueldo());
             stmt.setLong(13, trabajador.getRol().getIdRol());
 
-            stmt.executeUpdate();
+            try {
+                stmt.executeUpdate();
+            } catch (SQLException e) {
+                if (isDuplicateKey(e)) {
+                    throw new SQLException("Documento, usuario o datos únicos ya registrados.", e);
+                }
+                throw e;
+            }
 
             try (ResultSet rs = stmt.getGeneratedKeys()) {
                 if (rs.next()) {
@@ -124,8 +131,8 @@ public class TrabajadorDaoImpl implements ITrabajadorDao {
         String sqlTrabajador = "UPDATE TRABAJADOR SET usuario = ?, contrasena = ?, sueldo = ?, id_rol = ? WHERE id_trabajador = ?";
 
         try (Connection conn = conexion.connect();
-             PreparedStatement stmtPersona = conn.prepareStatement(sqlPersona);
-             PreparedStatement stmtTrabajador = conn.prepareStatement(sqlTrabajador)) {
+                PreparedStatement stmtPersona = conn.prepareStatement(sqlPersona);
+                PreparedStatement stmtTrabajador = conn.prepareStatement(sqlTrabajador)) {
 
             // PERSONA
             stmtPersona.setString(1, trabajador.getPrimerNombre());
@@ -138,7 +145,14 @@ public class TrabajadorDaoImpl implements ITrabajadorDao {
             stmtPersona.setString(8, trabajador.getEmail());
             stmtPersona.setLong(9, trabajador.getTelefono());
             stmtPersona.setLong(10, trabajador.getIdTrabajador());
-            stmtPersona.executeUpdate();
+            try {
+                stmtPersona.executeUpdate();
+            } catch (SQLException e) {
+                if (isDuplicateKey(e)) {
+                    throw new SQLException("El documento ya está asociado a otra persona.", e);
+                }
+                throw e;
+            }
 
             // TRABAJADOR
             stmtTrabajador.setString(1, trabajador.getUsuario());
@@ -146,7 +160,14 @@ public class TrabajadorDaoImpl implements ITrabajadorDao {
             stmtTrabajador.setDouble(3, trabajador.getSueldo());
             stmtTrabajador.setLong(4, trabajador.getRol().getIdRol());
             stmtTrabajador.setLong(5, trabajador.getIdTrabajador());
-            stmtTrabajador.executeUpdate();
+            try {
+                stmtTrabajador.executeUpdate();
+            } catch (SQLException e) {
+                if (isDuplicateKey(e)) {
+                    throw new SQLException("El usuario ya existe para otro trabajador.", e);
+                }
+                throw e;
+            }
         }
     }
 
@@ -234,6 +255,78 @@ public class TrabajadorDaoImpl implements ITrabajadorDao {
     }
 
     @Override
+    public Trabajador findByDocumento(String documento) throws SQLException {
+        String sql = "SELECT " +
+                "t.id_trabajador, t.usuario, t.contrasena, t.sueldo, " +
+                "r.id_rol, r.nombre_rol, r.descripcion, " +
+                "p.primer_nombre, p.segundo_nombre, p.primer_apellido, p.segundo_apellido, " +
+                "p.tipo_documento, p.documento, p.email, p.telefono, p.estado AS estado " +
+                "FROM TRABAJADOR t " +
+                "LEFT JOIN ROL r ON t.id_rol = r.id_rol " +
+                "LEFT JOIN PERSONA p ON t.id_persona = p.id_persona " +
+                "WHERE p.documento = ?";
+
+        try (Connection conn = conexion.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, documento);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToTrabajador(rs);
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Trabajador findByEmail(String email) throws SQLException {
+        String sql = "SELECT " +
+                "t.id_trabajador, t.usuario, t.contrasena, t.sueldo, " +
+                "r.id_rol, r.nombre_rol, r.descripcion, " +
+                "p.primer_nombre, p.segundo_nombre, p.primer_apellido, p.segundo_apellido, " +
+                "p.tipo_documento, p.documento, p.email, p.telefono, p.estado AS estado " +
+                "FROM TRABAJADOR t " +
+                "LEFT JOIN ROL r ON t.id_rol = r.id_rol " +
+                "LEFT JOIN PERSONA p ON t.id_persona = p.id_persona " +
+                "WHERE p.email = ?";
+
+        try (Connection conn = conexion.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, email);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToTrabajador(rs);
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Trabajador findByTelefono(long telefono) throws SQLException {
+        String sql = "SELECT " +
+                "t.id_trabajador, t.usuario, t.contrasena, t.sueldo, " +
+                "r.id_rol, r.nombre_rol, r.descripcion, " +
+                "p.primer_nombre, p.segundo_nombre, p.primer_apellido, p.segundo_apellido, " +
+                "p.tipo_documento, p.documento, p.email, p.telefono, p.estado AS estado " +
+                "FROM TRABAJADOR t " +
+                "LEFT JOIN ROL r ON t.id_rol = r.id_rol " +
+                "LEFT JOIN PERSONA p ON t.id_persona = p.id_persona " +
+                "WHERE p.telefono = ?";
+
+        try (Connection conn = conexion.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setLong(1, telefono);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToTrabajador(rs);
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
     public Trabajador authenticate(String usuario, String contrasena) throws SQLException {
         String sql = "SELECT " +
                 "t.id_trabajador, t.usuario, t.contrasena, t.sueldo, " +
@@ -303,5 +396,11 @@ public class TrabajadorDaoImpl implements ITrabajadorDao {
         t.setRol(rol);
 
         return t;
+    }
+
+    private boolean isDuplicateKey(SQLException e) {
+        int code = e.getErrorCode();
+        String state = e.getSQLState();
+        return code == 2601 || code == 2627 || (state != null && state.startsWith("23"));
     }
 }

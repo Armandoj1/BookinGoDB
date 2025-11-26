@@ -85,7 +85,8 @@ public class NuevaReservaController {
 
     private void initForm() {
         try {
-            List<Habitacion> habitaciones = habitacionDao.findAll();
+            // Solo listar habitaciones disponibles para evitar reservas en estados inválidos
+            List<Habitacion> habitaciones = habitacionDao.findByEstado("DISPONIBLE");
             cbHabitacion.setItems(FXCollections.observableArrayList(habitaciones));
             cbHabitacion.setConverter(new StringConverter<>() {
                 @Override
@@ -210,6 +211,10 @@ public class NuevaReservaController {
                 showAlert("Habitación requerida", "Seleccione una habitación.");
                 return;
             }
+            if (habitacion.getEstado() == null || !"DISPONIBLE".equalsIgnoreCase(habitacion.getEstado())) {
+                showAlert("Habitación no disponible", "No se puede crear una reserva para una habitación cuyo estado no sea DISPONIBLE.");
+                return;
+            }
 
             LocalDate fechaEntrada = dpEntrada.getValue();
             LocalDate fechaSalida = dpSalida.getValue();
@@ -270,7 +275,7 @@ public class NuevaReservaController {
                 // Ajustar estado a un valor permitido si es inválido o falta
                 String estadoActual = reservaEditando.getEstado();
                 if (!esEstadoPermitido(estadoActual)) {
-                    reservaEditando.setEstado("EN_PROCESO");
+                    reservaEditando.setEstado("ACTIVA");
                 }
                 reservaEditando.setTotal(total);
 
@@ -287,8 +292,8 @@ public class NuevaReservaController {
                 reserva.setFechaSalida(fechaSalida);
                 reserva.setTipoReserva(cbTipoReserva.getValue());
                 reserva.setObservacion(txtObservacion.getText());
-                // Estado inicial permitido por las validaciones del servicio
-                reserva.setEstado("PENDIENTE");
+                // Estado inicial válido según las opciones indicadas
+                reserva.setEstado("ACTIVA");
                 reserva.setTotal(total);
 
                 service.crear(reserva);
@@ -310,8 +315,8 @@ public class NuevaReservaController {
     private boolean esEstadoPermitido(String estado) {
         if (estado == null || estado.isBlank()) return false;
         String e = estado.trim().toUpperCase();
-        return e.equals("PENDIENTE") || e.equals("CONFIRMADA") || e.equals("CANCELADA")
-                || e.equals("COMPLETADA") || e.equals("EN_PROCESO");
+        // Estados válidos de RESERVA: ACTIVA, EN_CURSO, FINALIZADA, CANCELADA
+        return e.equals("ACTIVA") || e.equals("EN_CURSO") || e.equals("FINALIZADA") || e.equals("CANCELADA");
     }
 
     private void showAlert(String title, String content) {

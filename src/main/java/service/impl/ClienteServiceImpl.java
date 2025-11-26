@@ -23,7 +23,44 @@ public class ClienteServiceImpl implements IClienteService {
     @Override
     public Cliente crear(Cliente cliente) throws SQLException {
         validarCliente(cliente, true);
+        // Prevalidación de documento único
+        Cliente existente = clienteDao.findByDocumento(cliente.getDocumento().trim());
+        if (existente != null) {
+            throw new IllegalArgumentException("Ya existe un cliente con ese documento.");
+        }
+        // Prevalidación de email único
+        Cliente porEmail = clienteDao.findByEmail(cliente.getEmail().trim());
+        if (porEmail != null) {
+            throw new IllegalArgumentException("Ya existe un cliente con ese email.");
+        }
+        // Prevalidación de teléfono único
+        Cliente porTelefono = clienteDao.findByTelefono(cliente.getTelefono());
+        if (porTelefono != null) {
+            throw new IllegalArgumentException("Ya existe un cliente con ese teléfono.");
+        }
         clienteDao.create(cliente);
+        return cliente;
+    }
+
+    @Override
+    public Cliente crearConProcedimiento(Cliente cliente) throws SQLException {
+        validarCliente(cliente, true);
+        // Prevalidaciones de unicidad para evitar duplicados antes de llamar al SP
+        Cliente porDocumento = clienteDao.findByDocumento(cliente.getDocumento().trim());
+        if (porDocumento != null) {
+            throw new IllegalArgumentException("El documento ya está asociado a otro cliente.");
+        }
+        Cliente porEmail = clienteDao.findByEmail(cliente.getEmail().trim());
+        if (porEmail != null) {
+            throw new IllegalArgumentException("El email ya está asociado a otro cliente.");
+        }
+        Cliente porTelefono = clienteDao.findByTelefono(cliente.getTelefono());
+        if (porTelefono != null) {
+            throw new IllegalArgumentException("El teléfono ya está asociado a otro cliente.");
+        }
+
+        Long id = clienteDao.createUsingProcedure(cliente);
+        // El DAO asigna el id al objeto; retornamos el cliente ya creado
         return cliente;
     }
 
@@ -34,6 +71,21 @@ public class ClienteServiceImpl implements IClienteService {
             throw new IllegalArgumentException("El cliente debe tener un ID válido para poder actualizarse.");
         }
         validarCliente(cliente, false);
+        // Prevalidación: documento no debe pertenecer a otro cliente
+        Cliente existente = clienteDao.findByDocumento(cliente.getDocumento().trim());
+        if (existente != null && existente.getIdCliente() != cliente.getIdCliente()) {
+            throw new IllegalArgumentException("El documento ya está asociado a otro cliente.");
+        }
+        // Prevalidación: email no debe pertenecer a otro cliente
+        Cliente porEmail = clienteDao.findByEmail(cliente.getEmail().trim());
+        if (porEmail != null && porEmail.getIdCliente() != cliente.getIdCliente()) {
+            throw new IllegalArgumentException("El email ya está asociado a otro cliente.");
+        }
+        // Prevalidación: teléfono no debe pertenecer a otro cliente
+        Cliente porTelefono = clienteDao.findByTelefono(cliente.getTelefono());
+        if (porTelefono != null && porTelefono.getIdCliente() != cliente.getIdCliente()) {
+            throw new IllegalArgumentException("El teléfono ya está asociado a otro cliente.");
+        }
         clienteDao.update(cliente);
         return cliente;
     }
@@ -96,15 +148,24 @@ public class ClienteServiceImpl implements IClienteService {
         }
 
         // Tipo de documento
-        if (!esDeLista(c.getTipoDocumento(), "CC", "TI", "CE", "PP", "NIT")) {
+        if (!esDeLista(c.getTipoDocumento(), "CC", "TI", "CE", "PP", "NIT", "DNI")) {
             throw new IllegalArgumentException("Tipo de documento inválido.");
         }
 
-        // Documento: 5 a 20 caracteres
-        if (esVacio(c.getDocumento())
-                || c.getDocumento().length() < 5
-                || c.getDocumento().length() > 20) {
-            throw new IllegalArgumentException("El documento debe tener entre 5 y 20 caracteres.");
+        // Documento: CC entre 6 y 11 dígitos sin letras; otros tipos 5 a 20 caracteres
+        if (esVacio(c.getDocumento())) {
+            throw new IllegalArgumentException("El documento es obligatorio.");
+        }
+        String doc = c.getDocumento().trim();
+        String tipoDoc = c.getTipoDocumento() == null ? "" : c.getTipoDocumento().trim().toUpperCase();
+        if ("CC".equals(tipoDoc)) {
+            if (!doc.matches("^\\d{6,11}$")) {
+                throw new IllegalArgumentException("La CC debe tener entre 6 y 11 dígitos, sin letras.");
+            }
+        } else {
+            if (doc.length() < 5 || doc.length() > 20) {
+                throw new IllegalArgumentException("El documento debe tener entre 5 y 20 caracteres.");
+            }
         }
 
         // Estado (puedes ajustar a tus valores reales)
@@ -117,10 +178,10 @@ public class ClienteServiceImpl implements IClienteService {
             throw new IllegalArgumentException("El email no tiene un formato válido.");
         }
 
-        // Teléfono – si quieres usar el mismo rango que PERSONA:
-        long tel = c.getTelefono();
-        if (tel < 3000000000L || tel > 3999999999L) {
-            throw new IllegalArgumentException("El teléfono debe estar entre 3000000000 y 3999999999.");
+        // Teléfono: debe iniciar con 3 y tener 10 dígitos
+        String telStr = String.valueOf(c.getTelefono());
+        if (!telStr.matches("^3\\d{9}$")) {
+            throw new IllegalArgumentException("El teléfono debe iniciar con 3 y tener 10 dígitos.");
         }
 
         // Categoría

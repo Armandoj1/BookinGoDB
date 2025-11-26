@@ -63,6 +63,8 @@ public class RolesController {
 
     private void configurarTablaEditable() {
         tblRoles.setEditable(true);
+        // Fijar política de tamaño de columnas desde código para evitar errores de FXML
+        tblRoles.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         colId.setCellValueFactory(new PropertyValueFactory<>("idRol"));
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombreRol"));
@@ -106,14 +108,9 @@ public class RolesController {
         }
     }
 
-    private void eliminarRol(Rol rol) {
-        try {
-            rolService.eliminarRol(rol.getIdRol());
-            cargarRoles();
-        } catch (Exception e) {
-            mostrarError("No se pudo eliminar el rol", e.getMessage());
-        }
-    }
+    // Solo edición: se retira la columna de acciones (eliminar)
+
+    // Eliminación deshabilitada según requerimiento
 
     private void crearNuevoRolDialog() {
         Dialog<Rol> dialog = new Dialog<>();

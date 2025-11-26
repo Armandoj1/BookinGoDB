@@ -5,6 +5,7 @@ import dao.IHuespedDao;
 import model.Huesped;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -43,7 +44,14 @@ public class HuespedDaoImpl implements IHuespedDao {
             stmt.setLong(8, tel);
             stmt.setString(9, huesped.getEstado() == null ? "ACTIVO" : huesped.getEstado());
 
-            stmt.executeUpdate();
+            try {
+                stmt.executeUpdate();
+            } catch (SQLException e) {
+                if (isDuplicateKey(e)) {
+                    throw new SQLException("El documento ya existe en PERSONA.", e);
+                }
+                throw e;
+            }
 
             try (java.sql.ResultSet rs = stmt.getGeneratedKeys()) {
                 if (rs.next()) {
@@ -101,9 +109,54 @@ public class HuespedDaoImpl implements IHuespedDao {
         return huespedes;
     }
 
+    @Override
+    public boolean existsEmail(String email) throws SQLException {
+        String sql = "SELECT COUNT(1) FROM PERSONA WHERE email = ?";
+        try (Connection conn = conexion.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, email);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) return rs.getInt(1) > 0;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean existsTelefono(long telefono) throws SQLException {
+        String sql = "SELECT COUNT(1) FROM PERSONA WHERE telefono = ?";
+        try (Connection conn = conexion.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setLong(1, telefono);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) return rs.getInt(1) > 0;
+            }
+        }
+        return false;
+    }
+
     private String safeGet(ResultSet rs, String column) {
         try { return rs.getString(column); } catch (SQLException e) { return null; }
     }
 
     private String joinPart(String s) { return (s == null || s.isEmpty()) ? "" : s; }
+
+    @Override
+    public boolean existsDocumento(String documento) throws SQLException {
+        String sql = "SELECT 1 FROM PERSONA WHERE documento = ?";
+        try (Connection conn = conexion.connect();
+             java.sql.PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, documento);
+            try (java.sql.ResultSet rs = stmt.executeQuery()) {
+                return rs.next();
+            }
+        }
+    }
+
+    private boolean isDuplicateKey(SQLException e) {
+        int code = e.getErrorCode();
+        String state = e.getSQLState();
+        // SQL Server: 2601 (duplicated key), 2627 (unique/PK violation). 23000 es estado genérico de integridad.
+        return code == 2601 || code == 2627 || (state != null && state.startsWith("23"));
+    }
 }

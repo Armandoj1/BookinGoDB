@@ -1,7 +1,6 @@
 package controller;
 
-import ConexionBase.Conexion;
-import dao.impl.HabitacionDaoImpl;
+import service.AppContext;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -16,8 +15,7 @@ import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Habitacion;
-import service.DatabaseConfig;
-import service.impl.HabitacionServiceImpl;
+import service.IHabitacionService;
 import service.SessionManager;
 
 public class HabitacionesController {
@@ -27,14 +25,11 @@ public class HabitacionesController {
     @FXML
     private Button btnNuevaHabitacion;
 
-    private HabitacionDaoImpl habitacionDao;
-    private HabitacionServiceImpl habitacionService;
+    private IHabitacionService habitacionService;
 
     @FXML
     public void initialize() {
-        Conexion conexion = new Conexion(DatabaseConfig.getDatabase());
-        habitacionDao = new HabitacionDaoImpl(conexion);
-        habitacionService = new HabitacionServiceImpl(habitacionDao);
+        habitacionService = AppContext.getHabitacionService();
         // Restricción: recepcionista no puede crear habitaciones
         if (btnNuevaHabitacion != null && SessionManager.getInstance().esRecepcionista()) {
             btnNuevaHabitacion.setVisible(false);
@@ -49,7 +44,7 @@ public class HabitacionesController {
         int col = 0;
 
         try {
-            java.util.List<Habitacion> habitaciones = habitacionDao.findAll();
+            java.util.List<Habitacion> habitaciones = habitacionService.listarTodas();
             for (Habitacion hab : habitaciones) {
                 VBox card = crearTarjetaHabitacion(hab);
                 gridHabitaciones.add(card, col, row);
@@ -83,8 +78,7 @@ public class HabitacionesController {
         Label lblEstado = new Label(hab.getEstado());
         String estadoColor = switch (hab.getEstado()) {
             case "DISPONIBLE" -> "-fx-background-color: #d1fae5; -fx-text-fill: #065f46;";
-            case "OCUPADA" -> "-fx-background-color: #fee2e2; -fx-text-fill: #991b1b;";
-            case "LIMPIEZA" -> "-fx-background-color: #fef3c7; -fx-text-fill: #92400e;";
+            case "OCUPADO" -> "-fx-background-color: #fee2e2; -fx-text-fill: #991b1b;";
             default -> "-fx-background-color: #e2e8f0; -fx-text-fill: #475569;";
         };
         lblEstado.setStyle(estadoColor + " -fx-padding: 3 10; -fx-background-radius: 10; " +

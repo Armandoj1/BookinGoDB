@@ -10,6 +10,9 @@ public interface IClienteService {
 
     Cliente crear(Cliente cliente) throws SQLException;
 
+    // Variante que usa el procedimiento almacenado PR_CLIENTE_CREATE
+    Cliente crearConProcedimiento(Cliente cliente) throws SQLException;
+
     Cliente actualizar(Cliente cliente) throws SQLException;
 
     void eliminar(Long idCliente) throws SQLException;

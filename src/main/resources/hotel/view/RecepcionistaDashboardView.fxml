@@ -41,32 +41,32 @@
                 <ColumnConstraints percentWidth="25"/>
             </columnConstraints>
 
-            <!-- Check-ins Hoy (Verde) -->
+            <!-- Reservas activas hoy (Verde) -->
             <VBox GridPane.columnIndex="0" spacing="8" 
                   style="-fx-background-color: #4ade80; -fx-background-radius: 12; -fx-padding: 20;">
                 <HBox alignment="CENTER_LEFT" spacing="10">
                     <VBox VBox.vgrow="ALWAYS">
-                        <Label text="Check-ins Hoy" 
+                        <Label text="Reservas activas" 
                                style="-fx-font-size: 13px; -fx-text-fill: white; -fx-opacity: 0.9;"/>
                         <Label fx:id="lblCheckInsHoy" text="0" 
                                style="-fx-font-size: 42px; -fx-font-weight: bold; -fx-text-fill: white;"/>
-                        <Label text="Pendientes" 
+                        <Label text="Hoy" 
                                style="-fx-font-size: 11px; -fx-text-fill: white; -fx-opacity: 0.9;"/>
                     </VBox>
                     <Region HBox.hgrow="ALWAYS"/>
                 </HBox>
             </VBox>
 
-            <!-- Check-outs Hoy (Rojo) -->
+            <!-- Reservas canceladas hoy (Rojo) -->
             <VBox GridPane.columnIndex="1" spacing="8" 
                   style="-fx-background-color: #ef4444; -fx-background-radius: 12; -fx-padding: 20;">
                 <HBox alignment="CENTER_LEFT" spacing="10">
                     <VBox VBox.vgrow="ALWAYS">
-                        <Label text="Check-outs Hoy" 
+                        <Label text="Reservas canceladas" 
                                style="-fx-font-size: 13px; -fx-text-fill: white; -fx-opacity: 0.9;"/>
                         <Label fx:id="lblCheckOutsHoy" text="0" 
                                style="-fx-font-size: 42px; -fx-font-weight: bold; -fx-text-fill: white;"/>
-                        <Label text="Pendientes" 
+                        <Label text="Hoy" 
                                style="-fx-font-size: 11px; -fx-text-fill: white; -fx-opacity: 0.9;"/>
                     </VBox>
                     <Region HBox.hgrow="ALWAYS"/>
@@ -82,7 +82,7 @@
                                style="-fx-font-size: 13px; -fx-text-fill: white; -fx-opacity: 0.9;"/>
                         <Label fx:id="lblHabDisponibles" text="3" 
                                style="-fx-font-size: 42px; -fx-font-weight: bold; -fx-text-fill: white;"/>
-                        <Label text="De 6 totales" 
+                        <Label fx:id="lblTotalHabitacionesRecep" text="De 0 totales" 
                                style="-fx-font-size: 11px; -fx-text-fill: white; -fx-opacity: 0.9;"/>
                     </VBox>
                     <Region HBox.hgrow="ALWAYS"/>
@@ -98,7 +98,7 @@
                                style="-fx-font-size: 13px; -fx-text-fill: white; -fx-opacity: 0.9;"/>
                         <Label fx:id="lblHabOcupadas" text="2" 
                                style="-fx-font-size: 42px; -fx-font-weight: bold; -fx-text-fill: white;"/>
-                        <Label text="Ocupación: 33%" 
+                        <Label fx:id="lblOcupacionRecep" text="Ocupación: 0%" 
                                style="-fx-font-size: 11px; -fx-text-fill: white; -fx-opacity: 0.9;"/>
                     </VBox>
                     <Region HBox.hgrow="ALWAYS"/>
@@ -106,18 +106,18 @@
             </VBox>
         </GridPane>
 
-        <!-- Check-ins Pendientes -->
+        <!-- Reservas en curso hoy -->
         <VBox spacing="15" styleClass="dashboard-card" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 25;">
             <HBox alignment="CENTER_LEFT" spacing="10">
-                <Label text="Check-ins Pendientes" 
-                       style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                <Label text="Reservas en curso" 
+                        style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
                 <Region HBox.hgrow="ALWAYS"/>
                 <Label fx:id="lblBadgePendientes" text="0" 
-                       style="-fx-background-color: #fef3c7; -fx-text-fill: #92400e; -fx-padding: 4 12; -fx-background-radius: 12; -fx-font-weight: bold; -fx-font-size: 14px;"/>
+                        style="-fx-background-color: #fef3c7; -fx-text-fill: #92400e; -fx-padding: 4 12; -fx-background-radius: 12; -fx-font-weight: bold; -fx-font-size: 14px;"/>
             </HBox>
             
-            <Label text="No hay check-ins pendientes para hoy" 
-                   style="-fx-font-size: 14px; -fx-text-fill: #6c757d; -fx-padding: 20 0;"/>
+            <Label text="No hay reservas en curso" 
+                    style="-fx-font-size: 14px; -fx-text-fill: #6c757d; -fx-padding: 20 0;"/>
         </VBox>
 
     </VBox>

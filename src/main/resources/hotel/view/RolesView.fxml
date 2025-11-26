@@ -8,7 +8,7 @@
 <ScrollPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="controller.RolesController"
-            fitToWidth="true"
+            fitToWidth="true" fitToHeight="true"
             style="-fx-background: #F7F9FC; -fx-background-color: #F7F9FC;">
 
     <VBox spacing="25" style="-fx-background-color: #F7F9FC;">
@@ -28,12 +28,12 @@
         </HBox>
 
         <!-- Tabla editable de Roles -->
-        <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);">
-            <TableView fx:id="tblRoles" editable="true" style="-fx-background-color: transparent;">
+        <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);" VBox.vgrow="ALWAYS">
+            <TableView fx:id="tblRoles" editable="true" style="-fx-background-color: transparent;" VBox.vgrow="ALWAYS">
                 <columns>
-                    <TableColumn fx:id="colId" text="ID" prefWidth="80" />
-                    <TableColumn fx:id="colNombre" text="Nombre del Rol" prefWidth="240" />
-                    <TableColumn fx:id="colDescripcion" text="Descripción" prefWidth="480" />
+                    <TableColumn fx:id="colId" text="ID" />
+                    <TableColumn fx:id="colNombre" text="Nombre del Rol" />
+                    <TableColumn fx:id="colDescripcion" text="Descripción" />
                 </columns>
             </TableView>
         </VBox>

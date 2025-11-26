@@ -121,14 +121,30 @@ public class ReservaDaoImpl implements IReservaDao {
     public List<Reserva> findAll() throws SQLException {
         List<Reserva> reservas = new ArrayList<>();
 
-        String sql = "SELECT * FROM FN_GET_RESERVAS_CON_DOCUMENTO();";
+        // Reemplazar dependencia de función SQL por un SELECT estándar con JOINs
+        String sql = "SELECT r.*, c.documento, c.primer_nombre AS c_primer_nombre, c.primer_apellido AS c_primer_apellido, " +
+                "h.id_habitacion, h.numero, h.tipo_habitacion, h.precio " +
+                "FROM RESERVA r " +
+                "JOIN CLIENTE c ON r.id_cliente = c.id_cliente " +
+                "JOIN HABITACION h ON r.id_habitacion = h.id_habitacion";
 
         try (Connection conn = conexion.connect();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
+                // Usamos el mapeo básico que ya contempla documento si está presente
                 reservas.add(mapResultSetToReservaBasic(rs));
+            }
+        } catch (SQLException e) {
+            // Fallback: intentar un SELECT simple por si existen diferencias en esquema
+            String fallbackSql = "SELECT * FROM RESERVA";
+            try (Connection conn = conexion.connect();
+                 Statement stmt = conn.createStatement();
+                 ResultSet rs = stmt.executeQuery(fallbackSql)) {
+                while (rs.next()) {
+                    reservas.add(mapResultSetToReservaBasic(rs));
+                }
             }
         }
 
@@ -231,7 +247,7 @@ public class ReservaDaoImpl implements IReservaDao {
 
     @Override
     public int countByEstado(String estado) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM RESERVA WHERE estado = ?";
+        String sql = "SELECT COUNT(*) FROM RESERVA WHERE UPPER(estado) = UPPER(?)";
 
         try (Connection conn = conexion.connect();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -335,5 +351,39 @@ public class ReservaDaoImpl implements IReservaDao {
         } catch (SQLException ignored) {
         }
         return false;
+    }
+
+    /**
+     * Actualiza a FINALIZADA las reservas en curso cuyo tiempo haya terminado.
+     * Regla: R.estado = 'EN_CURSO' y R.fecha_salida <= GETDATE() (SQL Server).
+     */
+    public void finalizarReservasVencidas() throws SQLException {
+        String sql = "UPDATE R " +
+                "SET estado = 'FINALIZADA' " +
+                "FROM RESERVA R " +
+                "INNER JOIN HABITACION H ON H.id_habitacion = R.id_habitacion " +
+                "WHERE R.estado = 'EN_CURSO' " +
+                "  AND R.fecha_salida <= GETDATE();";
+
+        try (Connection conn = conexion.connect();
+             Statement stmt = conn.createStatement()) {
+            stmt.executeUpdate(sql);
+        }
+    }
+
+    /**
+     * Libera las habitaciones asociadas a reservas finalizadas, poniendo su estado en DISPONIBLE.
+     */
+    public void liberarHabitacionesFinalizadas() throws SQLException {
+        String sql = "UPDATE HABITACION " +
+                "SET estado = 'DISPONIBLE' " +
+                "WHERE id_habitacion IN ( " +
+                "    SELECT id_habitacion FROM RESERVA WHERE estado = 'FINALIZADA' " +
+                ");";
+
+        try (Connection conn = conexion.connect();
+             Statement stmt = conn.createStatement()) {
+            stmt.executeUpdate(sql);
+        }
     }
 }

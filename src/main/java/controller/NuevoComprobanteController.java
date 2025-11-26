@@ -71,8 +71,9 @@ public class NuevoComprobanteController {
         cbTipo.getSelectionModel().select("FACTURA");
         cbMetodoPago.setItems(FXCollections.observableArrayList("EFECTIVO", "TARJETA", "TRANSFERENCIA"));
         cbMetodoPago.getSelectionModel().select("EFECTIVO");
-        cbEstado.setItems(FXCollections.observableArrayList("PENDIENTE", "PAGADO", "ENPROCESO", "EMITIDO", "ANULADO"));
-        cbEstado.getSelectionModel().select("PENDIENTE");
+        // Estados válidos de COMPROBANTE: EMITIDO, PAGADO, CANCELADO
+        cbEstado.setItems(FXCollections.observableArrayList("EMITIDO", "PAGADO", "CANCELADO"));
+        cbEstado.getSelectionModel().select("EMITIDO");
 
         // Actualiza monto cuando cambia la reserva
         cbReserva.valueProperty().addListener((obs, oldV, newV) -> {
@@ -158,7 +159,7 @@ public class NuevoComprobanteController {
         try {
             Reserva r = cbReserva.getValue();
             if (r == null) {
-                showAlert("Reserva requerida", "Seleccione una reserva.");
+                showWarningAlert("Reserva requerida", "Seleccione una reserva.");
                 return;
             }
 
@@ -173,7 +174,7 @@ public class NuevoComprobanteController {
                 montoTexto = montoTexto.replace("S/", "").trim();
                 monto = Double.parseDouble(montoTexto);
             } catch (Exception ex) {
-                showAlert("Monto inválido", "Ingrese un monto numérico válido.");
+                showWarningAlert("Monto inválido", "Ingrese un monto numérico válido.");
                 return;
             }
 
@@ -206,14 +207,24 @@ public class NuevoComprobanteController {
 
             txtDescripcion.getScene().getWindow().hide();
         } catch (SQLException ex) {
-            showAlert("Error al crear", "No se pudo guardar el comprobante: " + ex.getMessage());
+            String msg = ex.getMessage() != null ? ex.getMessage() : "Error desconocido al guardar";
+            // Si viene el mensaje amigable desde el DAO, lo mostramos
+            showErrorAlert("Error al crear", msg);
         } catch (IllegalArgumentException iae) {
-            showAlert("Datos inválidos", iae.getMessage());
+            showWarningAlert("Datos inválidos", iae.getMessage());
         }
     }
 
-    private void showAlert(String title, String content) {
+    private void showWarningAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+    private void showErrorAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(content);
